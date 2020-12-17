@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using NewsFeed.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NewsFeed.Controllers
 {
@@ -21,6 +16,21 @@ namespace NewsFeed.Controllers
         public IActionResult Index()
         {
             return View(db.News.ToList());
+        }
+
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(News news)
+        {
+
+            db.News.Add(news);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
