@@ -1,0 +1,32 @@
+﻿@model IEnumerable<NewsFeed.Models.News>
+@{ 
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        News feed
+    </title>
+</head>
+<body>
+    <div class="new_storylising_contentwrap">
+        @foreach (var news in Model)
+        {
+        <ul>
+            <li>
+                <div class="new_storylising_img"><a href="@news.Name" title="@news.Name"><img src="@news.Image" width="200" height="200" border="0" alt="@news.Name" title="@news.Name"></a></div><div class="new_storylising_contentwrap">
+                    <h2 class="nstory_header">
+                        @news.Name
+                    </h2><div class="nstory_dateline">
+                         @DateTime.Now
+
+                    </div><div class="nstory_intro">@news.Description</div>
+                </div>
+            </li>
+        </ul>
+        }
+    </div>
+</body>
+</html>
