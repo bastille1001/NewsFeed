@@ -1,33 +1,8 @@
-﻿@model IEnumerable<NewsFeed.Models.News>
-@{ 
-    Layout = "_Layout";
+﻿@{
+    ViewData["Title"] = "Home Page";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>
-        News feed
-    </title>
-</head>
-<body>
-    <div class="new_storylising_contentwrap">
-        @foreach (var news in Model)
-        {
-        <ul>
-            <li>
-                <div class="new_storylising_img"><a href="@news.Name" title="@news.Name"><img src="@news.Image" width="200" height="200" border="0" alt="@news.Name" title="@news.Name"></a></div><div class="new_storylising_contentwrap">
-                    <h2 class="nstory_header">
-                        @news.Name
-                    </h2><div class="nstory_dateline">
-                         @DateTime.Now
-
-                    </div><div class="nstory_intro">@news.Description</div>
-                </div>
-            </li>
-        </ul>
-        }
-    <a asp-action="Create">Create news</a>
-    </div>
-</body>
-</html>
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>

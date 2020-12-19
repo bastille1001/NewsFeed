@@ -1,36 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NewsFeed.Models;
-using System.Linq;
+using System.Diagnostics;
 
 namespace NewsFeed.Controllers
 {
     public class HomeController : Controller
     {
-        NewsContext db;
-
-        public HomeController(NewsContext db)
+        private readonly ILogger<HomeController> logger;
+        public HomeController(ILogger<HomeController> logger)
         {
-            this.db = db;
+            this.logger = logger;
         }
+
 
         public IActionResult Index()
-        {
-            return View(db.News.ToList());
-        }
-
-
-        public IActionResult Create()
         {
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Create(News news)
+        public IActionResult Privacy()
         {
+            return View();
+        }
 
-            db.News.Add(news);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
