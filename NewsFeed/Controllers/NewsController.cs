@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,32 +10,33 @@ namespace NewsFeed.Controllers
 {
     public class NewsController : Controller
     {
-        private readonly NewsContext _context;
+        private readonly INewsRepository _repo;
 
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public NewsController(NewsContext context, IWebHostEnvironment webHostEnvironment)
+        public NewsController(INewsRepository repo, IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _repo = repo;
             _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.News.ToListAsync());
+            var model = _repo.GetAllNews();
+            return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var news = await _context.News
-                .FirstOrDefaultAsync(m => m.NewsId == id);
+            var news = _repo.GetAllNews()
+                .FirstOrDefault(m => m.NewsId == id);
             if (news == null)
             {
                 return NotFound();
@@ -53,7 +53,7 @@ namespace NewsFeed.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Description,Name,NewsId,Image")] NewsViewModel nm)
+        public IActionResult Create([Bind("Description,Name,NewsId,Image")] NewsViewModel nm)
         {
             if (ModelState.IsValid)
             {
@@ -64,8 +64,7 @@ namespace NewsFeed.Controllers
                     Description = nm.Description,
                     Name = nm.Name
                 };
-                _context.Add(news);
-                await _context.SaveChangesAsync();
+                _repo.Create(news);
                 return RedirectToAction(nameof(Index));
             }
             return View();
@@ -88,14 +87,9 @@ namespace NewsFeed.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var news = await _context.News.FindAsync(id);
+            var news = _repo.ReadNews(id);
             if (news == null)
             {
                 return NotFound();
@@ -106,7 +100,7 @@ namespace NewsFeed.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Description,Name,NewsId,Image")] News news)
+        public IActionResult Edit(int id, [Bind("Description,Name,NewsId,Image")] News news)
         {
             if (id != news.NewsId)
             {
@@ -117,8 +111,7 @@ namespace NewsFeed.Controllers
             {
                 try
                 {
-                    _context.Update(news);
-                    await _context.SaveChangesAsync();
+                    _repo.Update(news);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -136,16 +129,10 @@ namespace NewsFeed.Controllers
             return View(news);
         }
 
-
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var news = await _context.News
-                .FirstOrDefaultAsync(m => m.NewsId == id);
+            var news = _repo.ReadNews(id);
             if (news == null)
             {
                 return NotFound();
@@ -156,17 +143,16 @@ namespace NewsFeed.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var news = await _context.News.FindAsync(id);
-            _context.News.Remove(news);
-            await _context.SaveChangesAsync();
+            var news = _repo.ReadNews(id);
+            _repo.Delete(news.NewsId);
             return RedirectToAction(nameof(Index));
         }
 
         private bool NewsExists(int id)
         {
-            return _context.News.Any(e => e.NewsId == id);
+            return _repo.GetAllNews().Any(n => n.NewsId == id);
         }
     }
 }
