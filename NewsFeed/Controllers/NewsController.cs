@@ -53,37 +53,24 @@ namespace NewsFeed.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Description,Name,NewsId,Image")] NewsViewModel nm)
+        public IActionResult Create([Bind("Description,Name,NewsId,Image")] News n)
         {
             if (ModelState.IsValid)
             {
-                string fileName = UploadFile(nm);
-                var news = new News
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(n.Image.FileName);
+                string extension = Path.GetExtension(n.Image.FileName);
+                n.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/img", fileName);
+                using (var fileStream = new FileStream(path, FileMode.Create))
                 {
-                    Image = fileName,
-                    Description = nm.Description,
-                    Name = nm.Name
-                };
-                _repo.Create(news);
+                    n.Image.CopyTo(fileStream);
+                }
+
+                _repo.Create(n);
                 return RedirectToAction(nameof(Index));
             }
-            return View();
-        }
-
-        private string UploadFile(NewsViewModel nm)
-        {
-            string fileName = null;
-            if(nm.Image != null)
-            {
-                string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "img");
-                fileName = Guid.NewGuid().ToString() + "-" + nm.Image.FileName;
-                string filePath = Path.Combine(uploadDir, fileName);
-                using(var fileStream = new FileStream(filePath, FileMode.OpenOrCreate))
-                {
-                    nm.Image.CopyTo(fileStream);
-                }
-            }
-            return fileName;
+            return View(n);
         }
 
         [HttpGet]
@@ -145,6 +132,14 @@ namespace NewsFeed.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            var img = _repo.ReadNews(id);
+            
+            //delete image from the wwwroot/img
+            var imgPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", img.ImageName);
+            if (System.IO.File.Exists(imgPath))
+                System.IO.File.Delete(imgPath);
+
+            //delete from database 
             var news = _repo.ReadNews(id);
             _repo.Delete(news.NewsId);
             return RedirectToAction(nameof(Index));

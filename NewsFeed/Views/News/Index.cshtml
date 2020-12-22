@@ -35,7 +35,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <img src="@item.Image" class="rounded-circle" width="40" height="40" asp-append-version="true" />
+                <img src="@("~/img/" + item.ImageName)" class="rounded-circle" width="150px" height="150px" asp-append-version="true" />
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.NewsId">Edit</a> |
