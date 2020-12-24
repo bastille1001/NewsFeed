@@ -27,6 +27,18 @@ namespace NewsFeed.Controllers
             return View(model);
         }
 
+        public IActionResult ShowSearchForm()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ShowSearchResults(string SearchPhrase)
+        {
+            return View("Index", _repo.GetAllNews().Where(n => n.Name.ToLower().Contains(SearchPhrase.ToLower()) 
+                    || n.Description.ToLower().Contains(SearchPhrase)).ToList());
+        }
+
         [HttpGet]
         public IActionResult Details(int? id)
         {
@@ -66,11 +78,10 @@ namespace NewsFeed.Controllers
                 {
                     n.Image.CopyTo(fileStream);
                 }
-
                 _repo.Create(n);
                 return RedirectToAction(nameof(Index));
             }
-            return View(n);
+            return View();
         }
 
         [HttpGet]

@@ -16,6 +16,7 @@ namespace NewsFeed.Models
 
         public News Create(News news)
         {
+            
             context.News.Add(news);
             context.SaveChanges();
             return news;

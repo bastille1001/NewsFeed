@@ -8,8 +8,7 @@ namespace NewsFeed.Models
 {
     public class NewsViewModel
     {
-        public string Name { get; set; }
-        public IFormFile Image { get; set; }
-        public string Description { get; set; }
+        public IEnumerable<News> AllNews { get; set; }
+        public string CurrCategory { get; set; }
     }
 }
