@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,14 +13,13 @@ namespace NewsFeed.Models
         [Required(ErrorMessage = "Can`t be empty")]
         public string Name { get; set; }
 
-        public int NewsId { get; set; }
+        public int Id { get; set; }
 
         [NotMapped]
         public IFormFile Image { get; set; }
 
         public string ImageName { get; set; }
 
-        public int CategoryId { get; set; }
-
+        public Category Category { get; set; }
     }
 }

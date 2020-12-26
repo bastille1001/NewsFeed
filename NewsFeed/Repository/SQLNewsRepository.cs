@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using NewsFeed.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +18,6 @@ namespace NewsFeed.Models
 
         public News Create(News news)
         {
-            
             context.News.Add(news);
             context.SaveChanges();
             return news;
@@ -40,7 +41,7 @@ namespace NewsFeed.Models
 
         public News ReadNews(int id)
         {
-            return context.News.Find(id);
+            return context.News.FirstOrDefault(n => n.Id == id);
         }
 
         public News Update(News news)

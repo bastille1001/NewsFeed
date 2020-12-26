@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NewsFeed.Models;
+using NewsFeed.Repository;
 
 namespace NewsFeed
 {
@@ -20,6 +21,7 @@ namespace NewsFeed
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<NewsContext>(options => options.UseSqlServer(connection));
             services.AddTransient<INewsRepository, SQLNewsRepository>();
+            services.AddTransient<ICategoryRepository, SQLCategoryRepository>();
             services.AddControllersWithViews();
         }
 

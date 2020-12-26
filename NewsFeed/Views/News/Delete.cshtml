@@ -26,12 +26,12 @@
         </dd>
         
         <dd class = "col-sm-10">
-            <img src="@("~/img/"+Model.ImageName)" asp-append-version="true" width="250px" height="250px" />
+            <img src="@("~/img/"+Model.ImageName)" asp-append-version="true" width="120" height="120" />
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="NewsId" />
+        <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

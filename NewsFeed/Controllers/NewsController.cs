@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NewsFeed.Models;
+using NewsFeed.Repository;
 
 namespace NewsFeed.Controllers
 {
@@ -35,8 +36,7 @@ namespace NewsFeed.Controllers
         [HttpPost]
         public IActionResult ShowSearchResults(string SearchPhrase)
         {
-            return View("Index", _repo.GetAllNews().Where(n => n.Name.ToLower().Contains(SearchPhrase.ToLower()) 
-                    || n.Description.ToLower().Contains(SearchPhrase)).ToList());
+            return View("Index", _repo.GetAllNews().Where(n => n.Category.CategoryName.ToLower().Contains(SearchPhrase.ToLower())));
         }
 
         [HttpGet]
@@ -48,7 +48,7 @@ namespace NewsFeed.Controllers
             }
 
             var news = _repo.GetAllNews()
-                .FirstOrDefault(m => m.NewsId == id);
+                .FirstOrDefault(m => m.Id == id);
             if (news == null)
             {
                 return NotFound();
@@ -65,7 +65,7 @@ namespace NewsFeed.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Description,Name,NewsId,Image")] News n)
+        public IActionResult Create([Bind("Description,Name,Id,Image,Category")] News n)
         {
             if (ModelState.IsValid)
             {
@@ -98,9 +98,9 @@ namespace NewsFeed.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Description,Name,NewsId,Image")] News news)
+        public IActionResult Edit(int id, [Bind("Description,Name,Id,Image,Category")] News news)
         {
-            if (id != news.NewsId)
+            if (id != news.Id)
             {
                 return NotFound();
             }
@@ -113,7 +113,7 @@ namespace NewsFeed.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NewsExists(news.NewsId))
+                    if (!NewsExists(news.Id))
                     {
                         return NotFound();
                     }
@@ -152,13 +152,13 @@ namespace NewsFeed.Controllers
 
             //delete from database 
             var news = _repo.ReadNews(id);
-            _repo.Delete(news.NewsId);
+            _repo.Delete(news.Id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool NewsExists(int id)
         {
-            return _repo.GetAllNews().Any(n => n.NewsId == id);
+            return _repo.GetAllNews().Any(n => n.Id == id);
         }
     }
 }

@@ -23,12 +23,15 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-control">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" accept="image/*" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div><br />
             <div class="form-group">
+                <label asp-for="Category.CategoryName" class="control-label"></label>
+                <input asp-for="Category.CategoryName" class="form-control" />
+                <span asp-validation-for="Category.CategoryName" class="text-danger"></span>
+            </div>
+            <div class="form-control">
+                <input asp-for="Image" accept="image/*" />
+            </div>
+            <div>
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
