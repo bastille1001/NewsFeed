@@ -2,15 +2,15 @@
 
 namespace NewsFeed.Models
 {
-    public interface INewsRepository
+    public interface INewsRepository 
     {
-        News ReadNews(int id);
+        News Get(int id);
 
-        IEnumerable<News> GetAllNews();
+        IEnumerable<News> GetAll();
 
-        News Create(News news);
+        News Create(News t);
 
-        News Update(News news);
+        News Update(News t);
 
         News Delete(int id);
     }

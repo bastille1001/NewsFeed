@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 namespace NewsFeed.Repository
 {
-    public interface ICategoryRepository
+    interface ICategoryRepository
     {
-        IEnumerable<Category> AllCategories { get; }
+        IEnumerable<Category> GetCategories();
+        Category GetCategory(int id);
     }
 }

@@ -20,8 +20,8 @@ namespace NewsFeed
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<NewsContext>(options => options.UseSqlServer(connection));
-            services.AddTransient<INewsRepository, SQLNewsRepository>();
-            services.AddTransient<ICategoryRepository, SQLCategoryRepository>();
+            services.AddTransient<INewsRepository, NewsRepo>();
+            services.AddTransient<ICategoryRepository, CategoryRepo>();
             services.AddControllersWithViews();
         }
 

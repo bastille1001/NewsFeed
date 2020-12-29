@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NewsFeed.Models;
-using NewsFeed.Repository;
 
 namespace NewsFeed.Controllers
 {
@@ -24,7 +23,7 @@ namespace NewsFeed.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var model = _repo.GetAllNews();
+            var model = _repo.GetAll().ToList();
             return View(model);
         }
 
@@ -36,7 +35,7 @@ namespace NewsFeed.Controllers
         [HttpPost]
         public IActionResult ShowSearchResults(string SearchPhrase)
         {
-            return View("Index", _repo.GetAllNews().Where(n => n.Category.CategoryName.ToLower().Contains(SearchPhrase.ToLower())));
+            return View("Index", _repo.GetAll().Where(n => n.Description.ToLower().Contains(SearchPhrase.ToLower())));
         }
 
         [HttpGet]
@@ -47,7 +46,7 @@ namespace NewsFeed.Controllers
                 return NotFound();
             }
 
-            var news = _repo.GetAllNews()
+            var news = _repo.GetAll()
                 .FirstOrDefault(m => m.Id == id);
             if (news == null)
             {
@@ -74,7 +73,7 @@ namespace NewsFeed.Controllers
                 string extension = Path.GetExtension(n.Image.FileName);
                 n.ImageName = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
                 string path = Path.Combine(wwwRootPath + "/img", fileName);
-                using (var fileStream = new FileStream(path, FileMode.Create))
+                using (var fileStream = new FileStream(path, FileMode.OpenOrCreate))
                 {
                     n.Image.CopyTo(fileStream);
                 }
@@ -87,7 +86,7 @@ namespace NewsFeed.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var news = _repo.ReadNews(id);
+            var news = _repo.Get(id);
             if (news == null)
             {
                 return NotFound();
@@ -130,7 +129,7 @@ namespace NewsFeed.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var news = _repo.ReadNews(id);
+            var news = _repo.Get(id);
             if (news == null)
             {
                 return NotFound();
@@ -143,7 +142,7 @@ namespace NewsFeed.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var img = _repo.ReadNews(id);
+            var img = _repo.Get(id);
             
             //delete image from the wwwroot/img
             var imgPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", img.ImageName);
@@ -151,14 +150,14 @@ namespace NewsFeed.Controllers
                 System.IO.File.Delete(imgPath);
 
             //delete from database 
-            var news = _repo.ReadNews(id);
+            var news = _repo.Get(id);
             _repo.Delete(news.Id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool NewsExists(int id)
         {
-            return _repo.GetAllNews().Any(n => n.Id == id);
+            return _repo.GetAll().Any(n => n.Id == id);
         }
     }
 }
