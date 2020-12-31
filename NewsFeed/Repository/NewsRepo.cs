@@ -41,26 +41,10 @@ namespace NewsFeed.Models
 
         public News Update(News t)
         {
-            var result = context.News.FirstOrDefault(n => n.Id == t.Id);
-
-            if(result != null)
-            {
-                result.Category = t.Category;
-                result.Description = t.Description;
-                result.Image = t.Image;
-                result.ImageName = t.ImageName;
-                result.Name = t.Name;
-                
-
-                context.SaveChanges();
-                return result;
-            }
-            return null;
-
-            /*var n = context.News.Attach(t);
+            var n = context.News.Attach(t);
             n.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             context.SaveChanges();
-            return t;*/
+            return t;
         }
     }
 }

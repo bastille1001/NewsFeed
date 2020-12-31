@@ -14,11 +14,11 @@ namespace NewsFeed.Models
 
         public int Id { get; set; }
 
-
+        [Required(ErrorMessage = "Can`t be empty")]
         [NotMapped]
         public IFormFile Image { get; set; }
 
-        public string? ImageName { get; set; }
+        public string ImageName { get; set; }
 
         public int CategoryId { get; set; }
 
