@@ -21,10 +21,22 @@ namespace NewsFeed.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int page=1)
         {
+            int pageSize = 3;
+
             var model = _repo.GetAll().ToList();
-            return View(model);
+            var count = model.Count();
+            var items = model.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+            IndexViewModel indexViewModel = new IndexViewModel
+            {
+                PageViewModel = pageViewModel,
+                News = items
+            };
+
+            return View(indexViewModel);
         }
 
         public IActionResult ShowSearchForm()
