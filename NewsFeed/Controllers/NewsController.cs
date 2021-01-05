@@ -109,7 +109,7 @@ namespace NewsFeed.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Description,Name,Id,Image,Category")] News news)
+        public IActionResult Edit(int id, [Bind("Description,Name,Id,Image")] News news)
         {
             if (id != news.Id)
             {
