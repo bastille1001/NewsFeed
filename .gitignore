@@ -13,6 +13,10 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+*.html
+*.css
+*.js
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -27,8 +31,6 @@ bld/
 [Oo]bj/
 [Ll]og/
 
-*.html
-*.css
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
