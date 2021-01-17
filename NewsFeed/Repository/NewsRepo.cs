@@ -39,12 +39,18 @@ namespace NewsFeed.Models
             return context.News;
         }
 
-        public News Update(News t)
+        public bool SaveChanges()
         {
-            var n = context.News.Attach(t);
-            n.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            context.SaveChanges();
-            return t;
+            if (context.SaveChanges() > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void Update(News news)
+        {
+            context.News.Update(news);
         }
     }
 }

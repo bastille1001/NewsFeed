@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NewsFeed.Models;
 
 namespace NewsFeed.Controllers
@@ -96,46 +95,42 @@ namespace NewsFeed.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Edit(int? id)
         {
-            var news = _repo.Get(id);
-            if (news == null)
+            
+            if (id == null)
             {
-                return NotFound();
+                return View(new News());
             }
-            return View(news);
+            else
+            {
+                var news = _repo.Get((int)id);
+                return View(news);
+            }
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Description,Name,Id,Image")] News news)
+        public IActionResult Edit([Bind("Description,Name,Id,Image")] News news)
         {
-            if (id != news.Id)
+            if (news.Id > 0)
             {
-                return NotFound();
+                _repo.Update(news);
+            }
+            else
+            {
+                _repo.Create(news);
             }
 
-            if (ModelState.IsValid)
+            if(_repo.SaveChanges())
             {
-                try
-                {
-                    _repo.Update(news);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NewsExists(news.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
-            return View(news);
+            else
+            {
+                return View(news);
+            }
         }
 
         [HttpGet]

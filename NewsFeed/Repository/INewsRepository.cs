@@ -10,8 +10,9 @@ namespace NewsFeed.Models
 
         News Create(News t);
 
-        News Update(News t);
-
         News Delete(int id);
+
+        bool SaveChanges();
+        void Update(News news);
     }
 }
